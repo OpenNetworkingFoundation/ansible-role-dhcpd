@@ -1,0 +1,44 @@
+---
+# dhcpd tasks/main.yml
+#
+# SPDX-FileCopyrightText: © 2020 Open Networking Foundation <support@opennetworking.org>
+# SPDX-License-Identifier: Apache-2.0
+
+- name: include OS-specific vars
+  include_vars: "{{ ansible_os_family }}.yml"
+
+- name: include OS-specific tasks
+  include_tasks: "{{ ansible_os_family }}.yml"
+
+- name: Create dhcpd.conf from template
+  template:
+    src: dhcpd.conf.j2
+    dest: "{{ dhcpd_config_dir }}/dhcpd.conf"
+    backup: true
+    mode: "0644"
+    owner: root
+    group: root
+    # validate: 'dhcpd -t -cf %s' # Does not work...
+  notify:
+    - dhcpd-restart
+
+- name: Copy tftpd served files
+  copy:
+    src: "{{ item }}"
+    dest: "{{ tftpd_boot_dir }}/{{ item }}"
+    owner: root
+    group: "{{ tftpd_groupname }}"
+    mode: "0644"
+  with_items: "{{ tftpd_files }}"
+
+- name: Enable and start dhcpd
+  service:
+    name: "{{ dhcpd_service }}"
+    enabled: true
+    state: started
+
+- name: Enable and start tftpd
+  service:
+    name: "{{ tftpd_service }}"
+    enabled: true
+    state: started

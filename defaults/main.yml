@@ -1,0 +1,20 @@
+---
+# dhcpd defaults/main.yml
+#
+# SPDX-FileCopyrightText: © 2020 Open Networking Foundation <support@opennetworking.org>
+# SPDX-License-Identifier: Apache-2.0
+
+## dhcpd config
+
+# interfaces to listen on
+dhcpd_interfaces: []
+
+# subnets to serve DHCP on
+dhcpd_subnets: []
+
+# default PXE filename
+dhcpd_pxe_filename: "undionly.kpxe"
+
+## tftpd config
+# files to copy to the TFTP server
+tftpd_files: []

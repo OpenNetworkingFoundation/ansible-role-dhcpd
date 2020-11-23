@@ -1,0 +1,22 @@
+---
+# dhcpd tasks/Debian.yml
+#
+# SPDX-FileCopyrightText: © 2020 Open Networking Foundation <support@opennetworking.org>
+# SPDX-License-Identifier: Apache-2.0
+
+- name: Install dhcpd and tftp packages (Debian)
+  apt:
+    name:
+      - "isc-dhcp-server"
+      - "tftpd-hpa"
+    state: "present"
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Set dhcpd listening interfaces
+  lineinfile:
+    path: "/etc/default/isc-dhcp-server"
+    line: "INTERFACESv4=\"{{ dhcpd_interfaces | join(' ') }}\""
+    regex: "^INTERFACESv4=.*"
+  notify:
+    - "dhcpd-restart"
