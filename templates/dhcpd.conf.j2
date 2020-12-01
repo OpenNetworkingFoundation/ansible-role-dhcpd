@@ -31,24 +31,25 @@ subnet {{ subnet.subnet | ipaddr('network') }} netmask {{ subnet.subnet | ipaddr
 {% endif %}
 {% if subnet.range is defined %}
   range {{ subnet.range | ipaddr('next_usable') }} {{ subnet.range | ipaddr('last_usable') }};
-
 {% endif %}
+}
+
 {% if subnet.hosts is defined %}
-  # hosts
+# hosts for subnet: {{ subnet.dns_search [0] }}
 {% for host in subnet.hosts %}
-  host {{ host.name }} {
-    option host-name "{{ host.name }}";
-    fixed-address {{ host.ip_addr }};
-    hardware ethernet {{ host.mac_addr | hwaddr('linux') }};
+host {{ host.name }}.{{ subnet.dns_search [0] }} {
+  option host-name "{{ host.name }}";
+  fixed-address {{ host.ip_addr }};
+  hardware ethernet {{ host.mac_addr | hwaddr('linux') }};
 {% if host.pxe_filename is defined %}
-    filename "{{ host.pxe_filename }}";
+  filename "{{ host.pxe_filename }}";
 {% endif %}
 {% if host.default_url is defined %}
-    option default-url "{{ host.default_url }}";
+  option default-url "{{ host.default_url }}";
 {% endif %}
-  }
+}
 
 {% endfor %}
 {% endif %}
-}
+
 {% endfor %}

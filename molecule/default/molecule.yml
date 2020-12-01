@@ -9,11 +9,6 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: "ubuntu-16.04-priv"
-    image: "quay.io/paulfantom/molecule-systemd:ubuntu-16.04"
-    privileged: true
-    volumes:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   - name: "ubuntu-18.04-priv"
     image: "quay.io/paulfantom/molecule-systemd:ubuntu-18.04"
     privileged: true
