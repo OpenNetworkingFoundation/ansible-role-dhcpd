@@ -6,20 +6,36 @@ SPDX-License-Identifier: Apache-2.0
 
 Installs/configure a DHCP server and TFTP server
 
-## dhcpd
+A few assumptions are made by this role:
 
-Documentation:
+- If `routers` is not set in the `subnet` dictionary (within `dhcpd_subnets`),
+  then the first usable address is assumed to be the router.
+- If `routers` is set, RFC3442 classless static routes (option 121) will be
+  added in addition to the standard `routers` (option 3)
+
+## Configuration docs
+
+dhcpd - ISC's docs:
 
 - https://kb.isc.org/docs/isc-dhcp-44-manual-pages-dhcpd
 - https://kb.isc.org/docs/isc-dhcp-44-manual-pages-dhcpdconf
 - https://kb.isc.org/docs/isc-dhcp-44-manual-pages-dhcp-options
 
-## tftpd
-
-Documentation is scarce. Upstream source repo:
+tftpd - Documentation is scarce. Upstream source repo:
 
 - https://git.kernel.org/pub/scm/network/tftp/tftp-hpa.git
 
+## Reference docs
+
+DHCP:
+
+- [RFC2131 - DHCP Protocol](https://tools.ietf.org/html/rfc2131)
+- [RFC2132 - DHCP Options](https://tools.ietf.org/html/rfc2132)
+- [RFC3442 - Classless Static routes](https://tools.ietf.org/html/rfc3442)
+
+TFTP:
+
+- [RFC1350 - TFTP protocol v2](https://tools.ietf.org/html/rfc1350)
 
 ## Requirements
 

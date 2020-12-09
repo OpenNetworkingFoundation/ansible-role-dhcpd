@@ -8,13 +8,19 @@ SPDX-License-Identifier: Apache-2.0
 default-lease-time {{ subnet.lease_time | default("240") }};
 max-lease-time {{ subnet.max_lease_time | default("480") }};
 
+# option definitions
+option rfc3442-classless-static-routes code 121 = array of integer 8;
+
 {% for subnet in dhcpd_subnets %}
 subnet {{ subnet.subnet | ipaddr('network') }} netmask {{ subnet.subnet | ipaddr('netmask') }} {
 
   # routing
 {% if subnet.routers is defined %}
+  # custom router IP set
   option routers {{ subnet.routers }};
+  option rfc3442-classless-static-routes {{ subnet.subnet | ipaddr('prefix') }}, {{ subnet.subnet | ipaddr('network') | regex_replace('\.', ', ')}}, {{ subnet.routers | ipaddr('network') | regex_replace('\.', ', ')}};
 {% else %}
+  # first IP address in range used as router
   option routers {{ subnet.subnet | ipaddr('next_usable') }};
 {% endif %}
 
