@@ -9,8 +9,9 @@ Installs/configure a DHCP server and TFTP server
 A few assumptions are made by this role:
 
 - If `routers` is not set in the `subnet` dictionary (within `dhcpd_subnets`),
-  then the first usable address is assumed to be the router.
-- If `routers` is set, RFC3442 classless static routes (option 121) will be
+  then the first usable address is set as the router.
+- If `routers` is set and has a list of IP addresses as a part of the
+  `rfc3442routes` key, RFC3442 classless static routes (option 121) will be
   added in addition to the standard `routers` (option 3)
 
 ## Configuration docs
@@ -62,7 +63,8 @@ Minimum ansible version: 2.9.5
           - name: "dns"
             ip_addr: "192.168.0.2"
             mac_addr: "a1:b2:c3:d4:e5:f6"
-
+        routers:
+          - ip: "192.168.0.1"
   roles:
     - dhcpd
 

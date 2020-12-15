@@ -17,8 +17,14 @@ subnet {{ subnet.subnet | ipaddr('network') }} netmask {{ subnet.subnet | ipaddr
   # routing
 {% if subnet.routers is defined %}
   # custom router IP set
-  option routers {{ subnet.routers }};
-  option rfc3442-classless-static-routes {{ subnet.subnet | ipaddr('prefix') }}, {{ subnet.subnet | ipaddr('network') | regex_replace('\.', ', ')}}, {{ subnet.routers | ipaddr('network') | regex_replace('\.', ', ')}};
+  option routers {{ subnet.routers | map(attribute="ip") | join (",") }};
+{% for rtr in subnet.routers %}
+{% if "rfc3442routes" in rtr %}
+{% for r3442r in rtr.rfc3442routes %}
+  option rfc3442-classless-static-routes {{ r3442r | ipaddr('prefix') }}, {{ r3442r | ipaddr('network') | regex_replace('\.', ', ')}}, {{ rtr.ip | ipaddr('network') | regex_replace('\.', ', ')}};
+{% endfor %}
+{% endif %}
+{% endfor %}
 {% else %}
   # first IP address in range used as router
   option routers {{ subnet.subnet | ipaddr('next_usable') }};
