@@ -1,5 +1,5 @@
 ---
-# dhcpd vars/Debian.yml
+# dhcpd vars/OpenBSD.yml
 #
 # SPDX-FileCopyrightText: © 2020 Open Networking Foundation <support@opennetworking.org>
 # SPDX-License-Identifier: Apache-2.0
@@ -7,10 +7,10 @@
 # NOTE: Only put platform/OS-specific variables in this file.
 # Put all other variables in the 'defaults/main.yml' file.
 
-dhcpd_service: "isc-dhcp-server"
-dhcpd_config_dir: "/etc/dhcp"
-dhcpd_groupname: "root"
+dhcpd_service: "dhcpd"
+dhcpd_config_dir: "/etc"
+dhcpd_groupname: "wheel"
 
-tftpd_service: "tftpd-hpa"
-tftpd_groupname: "tftp"
-tftpd_boot_dir: "/var/lib/tftpboot"
+tftpd_service: "tftpd"
+tftpd_groupname: "_tftpd"
+tftpd_boot_dir: "/var/tftpboot"

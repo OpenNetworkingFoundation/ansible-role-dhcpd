@@ -1,0 +1,14 @@
+---
+# dhcpd tasks/OpenBSD.yml
+#
+# SPDX-FileCopyrightText: © 2020 Open Networking Foundation <support@opennetworking.org>
+# SPDX-License-Identifier: Apache-2.0
+
+# installed in base, but need config
+
+- name: Set dhcpd and tftpd arguments for use with service module
+  set_fact:
+    dhcpd_arguments: "{{ dhcpd_interfaces | join(' ') }}"
+    tftpd_arguments: >
+      -v -l {{ tftpd_listen_ip | default(ansible_default_ipv4["address"]) }}
+      {{ tftpd_boot_dir }}

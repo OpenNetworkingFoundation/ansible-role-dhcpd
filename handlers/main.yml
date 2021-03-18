@@ -8,3 +8,8 @@
   service:
     name: "{{ dhcpd_service }}"
     state: restarted
+
+- name: tftpd-restart
+  service:
+    name: "{{ tftpd_service }}"
+    state: restarted

@@ -9,7 +9,9 @@ default-lease-time {{ subnet.lease_time | default("240") }};
 max-lease-time {{ subnet.max_lease_time | default("480") }};
 
 # option definitions
+{% if ansible_system == "Linux" %}
 option rfc3442-classless-static-routes code 121 = array of integer 8;
+{% endif %}
 
 {% for subnet in dhcpd_subnets %}
 subnet {{ subnet.subnet | ipaddr('network') }} netmask {{ subnet.subnet | ipaddr('netmask') }} {
@@ -18,13 +20,15 @@ subnet {{ subnet.subnet | ipaddr('network') }} netmask {{ subnet.subnet | ipaddr
 {% if subnet.routers is defined %}
   # custom router IP set
   option routers {{ subnet.routers | map(attribute="ip") | join (",") }};
+{% set r3442ns = namespace(r3442list = []) %}
 {% for rtr in subnet.routers %}
 {% if "rfc3442routes" in rtr %}
-{% for r3442r in rtr.rfc3442routes %}
-  option rfc3442-classless-static-routes {{ r3442r | ipaddr('prefix') }}, {{ r3442r | ipaddr('network') | regex_replace('\.', ', ')}}, {{ rtr.ip | ipaddr('network') | regex_replace('\.', ', ')}};
-{% endfor %}
+{% set r3442ns.r3442list = r3442ns.r3442list + (rtr | rfc3442_words() ) %}
 {% endif %}
 {% endfor %}
+{% if r3442ns.r3442list %}
+  option rfc3442-classless-static-routes {{ r3442ns.r3442list | join(', ') }};
+{% endif %}
 {% else %}
   # first IP address in range used as router
   option routers {{ subnet.subnet | ipaddr('next_usable') }};
@@ -41,7 +45,13 @@ subnet {{ subnet.subnet | ipaddr('network') }} netmask {{ subnet.subnet | ipaddr
   next-server {{ subnet.tftpd_server }};
 
 {% endif %}
+{% if subnet.ntp_servers is defined %}
+  # ntp options
+  option ntp-servers {{ subnet.ntp_servers | join('", "') }};
+
+{% endif %}
 {% if subnet.range is defined %}
+  # dynamically assignable range
   range {{ subnet.range | ipaddr('next_usable') }} {{ subnet.range | ipaddr('last_usable') }};
 {% endif %}
 }

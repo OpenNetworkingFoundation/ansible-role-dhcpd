@@ -6,6 +6,33 @@
 
 - name: Converge
   hosts: all
+  vars:
+    dhcpd_interfaces:
+      - bridge0
+    dhcpd_subnets:
+      - subnet: "192.168.0.1/24"
+        range: "192.168.0.128/25"
+        dns_servers:
+          - "192.168.0.1"
+          - "192.168.0.2"
+        dns_search:
+          - "example.com"
+        tftpd_server: "192.168.0.1"
+        hosts:
+          - name: "dns"
+            ip_addr: "192.168.0.2"
+            mac_addr: "a1:b2:c3:d4:e5:f6"
+          - name: "extra_router"
+            ip_addr: "192.168.0.10"
+            mac_addr: "a6:b5:c4:d3:e2:f1"
+        routers:
+          - ip: "192.168.0.1"
+          - ip: "192.168.0.10"
+            rfc3442routes:
+              - 10.0.0.0/8
+              - 172.16.0.0/16
+              - 192.168.10.0/25
+
   tasks:
     - name: "Include dhcpd"
       include_role:

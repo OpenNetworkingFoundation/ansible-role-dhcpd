@@ -17,7 +17,7 @@
     backup: true
     mode: "0644"
     owner: root
-    group: root
+    group: "{{ dhcpd_groupname }}"
     # validate: 'dhcpd -t -cf %s' # Does not work...
   notify:
     - dhcpd-restart
@@ -36,9 +36,11 @@
     name: "{{ dhcpd_service }}"
     enabled: true
     state: started
+    arguments: "{{ dhcpd_arguments | default(omit) }}"
 
 - name: Enable and start tftpd
   service:
     name: "{{ tftpd_service }}"
     enabled: true
     state: started
+    arguments: "{{ tftpd_arguments | default(omit) }}"

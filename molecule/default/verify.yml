@@ -6,7 +6,12 @@
 
 - name: Verify
   hosts: all
+
   tasks:
-  - name: example assertion
+
+  - name: Populate service facts
+    service_facts:
+
+  - name: isc-dhcp-server is running
     assert:
-      that: true
+      that: ansible_facts.services["isc-dhcp-server.service"]["state"] == "running"

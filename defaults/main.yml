@@ -18,3 +18,7 @@ dhcpd_pxe_filename: "undionly.kpxe"
 ## tftpd config
 # files to copy to the TFTP server
 tftpd_files: []
+
+# Set this to listen on a specific non-default IP address. Only has effect on
+# OpenBSD TFTP server
+# tftpd_listen_ip: 10.0.0.1

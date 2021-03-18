@@ -1,0 +1,22 @@
+---
+# dhcpd molecule/default/prepare.yml
+#
+# SPDX-FileCopyrightText: © 2020 Open Networking Foundation <support@opennetworking.org>
+# SPDX-License-Identifier: Apache-2.0
+
+- name: Prepare
+  hosts: all
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: true
+
+    - name: Create a bridge to nowhere so dhcpd can start during testing
+      when: "'bridge0' not in ansible_interfaces"
+      command:
+        cmd: "{{ item }}"
+      with_items:
+        - "ip link add bridge0 type bridge"
+        - "ip addr add 192.168.0.5/24 dev bridge0"
+        - "ip link set bridge0 up"

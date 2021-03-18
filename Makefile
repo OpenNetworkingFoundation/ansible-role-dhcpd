@@ -8,9 +8,12 @@ SHELL = bash -eu -o pipefail
 .DEFAULT_GOAL := help
 .PHONY: test lint yamllint ansiblelint license help
 
-test: ## run tests on the playbook with molecule
+test: filter_test ## run tests on the playbook with molecule
 	molecule --version
 	molecule test
+
+filter_test: ## test filter plugins
+	python filter_plugins/rfc3442_words.py
 
 lint: yamllint ansiblelint ## run all lint checks
 

@@ -26,6 +26,8 @@ tftpd - Documentation is scarce. Upstream source repo:
 
 - https://git.kernel.org/pub/scm/network/tftp/tftp-hpa.git
 
+Also supports OpenBSD dhcpd (fork of ISC) and tftpd (BSD).
+
 ## Reference docs
 
 DHCP:
@@ -69,6 +71,10 @@ Minimum ansible version: 2.9.5
     - dhcpd
 
 ```
+### Todo
+
+Add classless static route support for OpenBSD - see dhcp-options(5) on that
+system.
 
 ## License and Author
 
