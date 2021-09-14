@@ -13,4 +13,4 @@ dhcpd_groupname: "wheel"
 
 tftpd_service: "tftpd"
 tftpd_groupname: "_tftpd"
-tftpd_boot_dir: "/var/tftpboot"
+tftpd_boot_dir: "/var/tftpd"

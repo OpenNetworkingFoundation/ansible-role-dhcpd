@@ -13,15 +13,15 @@ max-lease-time {{ subnet.max_lease_time | default("480") }};
 option rfc3442-classless-static-routes code 121 = array of integer 8;
 {% endif %}
 
-{% for subnet in dhcpd_subnets %}
-subnet {{ subnet.subnet | ipaddr('network') }} netmask {{ subnet.subnet | ipaddr('netmask') }} {
+{% for subnet, subdata in dhcpd_subnets.items() %}
+subnet {{ subnet | ipaddr('network') }} netmask {{ subnet | ipaddr('netmask') }} {
 
   # routing
-{% if subnet.routers is defined %}
+{% if subdata.routers is defined %}
   # custom router IP set
-  option routers {{ subnet.routers | map(attribute="ip") | join (",") }};
+  option routers {{ subdata.routers | map(attribute="ip") | join (",") }};
 {% set r3442ns = namespace(r3442list = []) %}
-{% for rtr in subnet.routers %}
+{% for rtr in subdata.routers %}
 {% if "rfc3442routes" in rtr %}
 {% set r3442ns.r3442list = r3442ns.r3442list + (rtr | rfc3442_words() ) %}
 {% endif %}
@@ -31,35 +31,35 @@ subnet {{ subnet.subnet | ipaddr('network') }} netmask {{ subnet.subnet | ipaddr
 {% endif %}
 {% else %}
   # first IP address in range used as router
-  option routers {{ subnet.subnet | ipaddr('next_usable') }};
+  option routers {{ subnet | ipaddr('next_usable') }};
 {% endif %}
 
   # DNS/naming options
-  option domain-name-servers {{ subnet.dns_servers | join(", ") }};
-  option domain-name "{{ subnet.dns_search [0] }}";
-  option domain-search "{{ subnet.dns_search | join('", "') }}";
+  option domain-name-servers {{ subdata.dns_servers | join(", ") }};
+  option domain-name "{{ subdata.dns_search [0] }}";
+  option domain-search "{{ subdata.dns_search | join('", "') }}";
 
-{% if subnet.tftpd_server is defined %}
+{% if subdata.tftpd_server is defined and subdata.tftpd_server %}
   # tftpd options
-  filename "{{ subnet.pxe_filename | default(dhcpd_pxe_filename) }}";
-  next-server {{ subnet.tftpd_server }};
+  filename "{{ subdata.pxe_filename | default(dhcpd_pxe_filename) }}";
+  next-server {{ subdata.tftpd_server }};
 
 {% endif %}
-{% if subnet.ntp_servers is defined %}
+{% if subdata.ntp_servers is defined and subdata.ntp_servers %}
   # ntp options
-  option ntp-servers {{ subnet.ntp_servers | join('", "') }};
+  option ntp-servers {{ subdata.ntp_servers | join('", "') }};
 
 {% endif %}
-{% if subnet.range is defined %}
+{% if subdata.range is defined %}
   # dynamically assignable range
-  range {{ subnet.range | ipaddr('next_usable') }} {{ subnet.range | ipaddr('last_usable') }};
+  range {{ subdata.range | ipaddr('next_usable') }} {{ subdata.range | ipaddr('last_usable') }};
 {% endif %}
 }
 
-{% if subnet.hosts is defined %}
-# hosts for subnet: {{ subnet.dns_search [0] }}
-{% for host in subnet.hosts %}
-host {{ host.name }}.{{ subnet.dns_search [0] }} {
+{% if subdata.hosts is defined %}
+# hosts for subnet: {{ subdata.dns_search [0] }}
+{% for host in subdata.hosts %}
+host {{ host.name }}.{{ subdata.dns_search [0] }} {
   option host-name "{{ host.name }}";
   fixed-address {{ host.ip_addr }};
   hardware ethernet {{ host.mac_addr | hwaddr('linux') }};

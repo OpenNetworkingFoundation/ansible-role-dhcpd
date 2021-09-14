@@ -14,7 +14,18 @@ platforms:
     privileged: true
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  - name: "debian-11-priv"
+    image: "onfinfra/molecule-systemd:debian-11"
+    privileged: true
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
 provisioner:
   name: ansible
+  playbooks:
+    prepare: prepare.yml
+  inventory:
+    host_vars:
+      debian-11-priv:
+        ansible_python_interpreter: /usr/bin/python3
 verifier:
   name: ansible

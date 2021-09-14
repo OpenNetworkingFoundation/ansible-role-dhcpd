@@ -1,7 +1,3 @@
-<!--
-SPDX-FileCopyrightText: © 2020 Open Networking Foundation <support@opennetworking.org>
-SPDX-License-Identifier: Apache-2.0
---!>
 # dhcpd
 
 Installs/configure a DHCP server and TFTP server
@@ -53,7 +49,7 @@ Minimum ansible version: 2.9.5
     dhcpd_interfaces:
       - eth0
     dhcpd_subnets:
-      - subnet: "192.168.0.1/24"
+      "192.168.0.1/24":
         range: "192.168.0.128/25"
         dns_servers:
           - "192.168.0.1"
@@ -71,7 +67,7 @@ Minimum ansible version: 2.9.5
     - dhcpd
 
 ```
-### Todo
+### ToDo
 
 Add classless static route support for OpenBSD - see dhcp-options(5) on that
 system.

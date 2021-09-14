@@ -12,6 +12,12 @@
       apt:
         update_cache: true
 
+    - name: Install ps command for Debian init.d script to function
+      apt:
+        name:
+          - "procps"
+        state: "present"
+
     - name: Create a bridge to nowhere so dhcpd can start during testing
       when: "'bridge0' not in ansible_interfaces"
       command:

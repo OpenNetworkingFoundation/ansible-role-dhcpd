@@ -10,7 +10,7 @@
 dhcpd_interfaces: []
 
 # subnets to serve DHCP on
-dhcpd_subnets: []
+dhcpd_subnets: {}
 
 # default PXE filename
 dhcpd_pxe_filename: "undionly.kpxe"
