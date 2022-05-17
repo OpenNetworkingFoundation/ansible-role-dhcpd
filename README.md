@@ -6,9 +6,13 @@ A few assumptions are made by this role:
 
 - If `routers` is not set in the `subnet` dictionary (within `dhcpd_subnets`),
   then the first usable address is set as the router.
+
 - If `routers` is set and has a list of IP addresses as a part of the
   `rfc3442routes` key, RFC3442 classless static routes (option 121) will be
   added in addition to the standard `routers` (option 3)
+
+Supports using PXE to load both traditional BIOS and EFI payloads, tested
+primarily with `iPXE`.
 
 ## Configuration docs
 
@@ -22,7 +26,9 @@ tftpd - Documentation is scarce. Upstream source repo:
 
 - https://git.kernel.org/pub/scm/network/tftp/tftp-hpa.git
 
-Also supports OpenBSD dhcpd (fork of ISC) and tftpd (BSD).
+Also supports OpenBSD dhcpd (fork of ISC) and tftpd (BSD), which has some
+difference in configuration/behavior - missing conditionals, additional option
+definitions, etc.
 
 ## Reference docs
 
@@ -35,6 +41,8 @@ DHCP:
 TFTP:
 
 - [RFC1350 - TFTP protocol v2](https://tools.ietf.org/html/rfc1350)
+
+[iPXE Chainloading](https://ipxe.org/howto/chainloading)
 
 ## Requirements
 

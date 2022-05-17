@@ -6,6 +6,7 @@
 
 galaxy_info:
   role_name: dhcpd
+  namespace: onf
 
   author: Open Networking Foundation
   description: Configures a ISC-style dhcpd server and optional TFTP server

@@ -9,8 +9,9 @@ default-lease-time {{ subnet.lease_time | default("240") }};
 max-lease-time {{ subnet.max_lease_time | default("480") }};
 
 # option definitions
-{% if ansible_system == "Linux" %}
+{% if ansible_system != "OpenBSD" %}
 option rfc3442-classless-static-routes code 121 = array of integer 8;
+option client-arch code 93 = unsigned integer 16; # RFC4578
 {% endif %}
 
 {% for subnet, subdata in dhcpd_subnets.items() %}
@@ -41,7 +42,17 @@ subnet {{ subnet | ipaddr('network') }} netmask {{ subnet | ipaddr('netmask') }}
 
 {% if subdata.tftpd_server is defined and subdata.tftpd_server %}
   # tftpd options
+{% if ansible_system == "OpenBSD" %}
   filename "{{ subdata.pxe_filename | default(dhcpd_pxe_filename) }}";
+{% else %}
+  if option client-arch = 00:07 {
+     # amd64 EFI boot
+     filename "{{ subdata.efi_filename | default(dhcpd_efi_filename) }}";
+  } else {
+     # BIOS boot
+     filename "{{ subdata.pxe_filename | default(dhcpd_pxe_filename) }}";
+  }
+{% endif %}
   next-server {{ subdata.tftpd_server }};
 
 {% endif %}

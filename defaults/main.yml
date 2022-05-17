@@ -12,8 +12,9 @@ dhcpd_interfaces: []
 # subnets to serve DHCP on
 dhcpd_subnets: {}
 
-# default PXE filename
+# default PXE and EFI TFTP delivered files
 dhcpd_pxe_filename: "undionly.kpxe"
+dhcpd_efi_filename: "snponly.efi"
 
 ## tftpd config
 # files to copy to the TFTP server
