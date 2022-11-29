@@ -8,6 +8,9 @@ SPDX-License-Identifier: Apache-2.0
 default-lease-time {{ subnet.lease_time | default("240") }};
 max-lease-time {{ subnet.max_lease_time | default("480") }};
 
+# ignore client UID data, which can lead to duplicate leases
+ignore-client-uids true;
+
 # option definitions
 {% if ansible_system != "OpenBSD" %}
 option rfc3442-classless-static-routes code 121 = array of integer 8;
